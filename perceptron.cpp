@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /*
 * perceptron.cpp
 * created on 2015/11/01
@@ -15,67 +14,43 @@ using namespace std;
 /*
 *	perceptron method original style
 */
-int perceptronOringinal(vector<vector<double>> matrix)
+void perceptronOringinal(vector<vector<double>> matrix,vector<double> &param,double learning_rate)
 {
-	int result = -2;
 	unsigned int count = 0;
-	//training samples' lines
-	unsigned int m = matrix.size();
-	//learning_rate
-	double b, learning_rate;
-	double w[2] = { 0, 0 };
-	b = 0;
-	learning_rate = 1;//学习率
-	while (count != m)
+	//training samples' total_rows
+	unsigned int total_rows = matrix.size();
+	//initialize param
+	for(size_t i = 0;i<matrix[0].size();i++)
 	{
-		for (size_t i_m = 0; i_m < m; i_m++)
-		{
-			if ((matrix[i_m][0] * w[0] + matrix[i_m][1] * w[1] + b)*matrix[i_m][2] <= 0)
-				{
-					w[0] = w[0] + learning_rate*matrix[i_m][2] * matrix[i_m][0];
-					w[1] = w[1] + learning_rate*matrix[i_m][2] * matrix[i_m][1];
-					b = b + learning_rate*matrix[i_m][2];
-=======
-#include <iostream>
-
-using namespace std;
-
-
-int perceptronOringinal(int matrix[][2], int m, int n, int c[3])
-{
-	int result = -2;
-	int count = 0;
-	double b, lr;
-	double w[2] = { 0, 0 };
-	b = 0;
-	lr = 1;//学习率
-
-	while (count != m)
+		param.push_back(0.0);
+	}
+	while (count != total_rows)
 	{
-		for (int i_m = 0; i_m < m; i_m++)
+		for (size_t rows = 0; rows < total_rows; rows++)
 		{
-			if ((matrix[i_m][0] * w[0] + matrix[i_m][1] * w[1] + b)*c[i_m] <= 0)
+			double sum=0;
+			size_t colums;
+			for(colums = 0; colums < matrix[rows].size()-1; colums++ )
+			{
+				sum += matrix[rows][colums]*param[colums];
+			}
+			if((sum + param[param.size()-1])*matrix[rows][colums] <= 0)
+			{
+				for(size_t param_index = 0; param_index<param.size()-1;param_index++)
 				{
-					w[0] = w[0] + lr*c[i_m] * matrix[i_m][0];
-					w[1] = w[1] + lr*c[i_m] * matrix[i_m][1];
-					b = b + lr*c[i_m];
->>>>>>> 515d8697b2d68dfd77dfe58b26aa5432a54d8948
-					count = 0;
-					cout << w[0] << " === " << w[1] << endl;
+					param[param_index] = param[param_index] + learning_rate*matrix[rows][colums] * matrix[rows][param_index];
 				}
-				else{
-					count++;
-				}
+				param[param.size()-1] = param[param.size()-1] + learning_rate*matrix[rows][colums];
+				count = 0;
+				//cout << param[0] << " " << param[1] <<" "<<param[param.size()-1]<<endl;
+			}
+			else{
+				count++;
+			}
 		}
 	}
-	
-
-
-
-	return result;
 }
 
-<<<<<<< HEAD
 /*
 * writen by @egmkang
 */
@@ -129,23 +104,20 @@ int main()
 {
 	//read training numbers
 	vector<vector<double>> numbers;
+	vector<double> param;
+	double learning_rate = 1.0;
 	if(readFileNumber("1.txt",numbers))
 	{
 		//preceptron method
-		perceptronOringinal(numbers);
+		perceptronOringinal(numbers,param,learning_rate);
+		cout<<"The param is : ( ";
+		for(size_t i = 0; i<param.size();i++)
+		{
+			cout<<param[i]<<" ";
+		}
+		cout<<")\n";
 	}else{
 		cout<<"Error!"<<endl;
 	}
-=======
-
-//main function
-int main()
-{
-	int m = 3;
-	int n = 2;;
-	int matrix[3][2] = { { 3, 3 }, { 4, 3 }, { 1, 1 } };
-	int c[3] = { 1, 1, -1 };
-	perceptronOringinal(matrix, m, n, c);
->>>>>>> 515d8697b2d68dfd77dfe58b26aa5432a54d8948
 	return 0;
 }
